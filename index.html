@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BABYTROLL — The Internet's Most Dangerous Baby</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="shortcut icon" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="msapplication-TileImage" content="logo.png">
+<script src="/cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="/cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="/cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<link rel="stylesheet" href="/cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Permanent+Marker&family=Special+Elite&family=Oswald:wght@700&family=Creepster&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --paper: #f5f0e8;
+    --dirty: #e8e0cc;
+    --ink: #1a1008;
+    --red: #cc1111;
+    --red2: #ff2222;
+    --yellow: #ffd600;
+    --green: #00aa44;
+    --blue: #1144cc;
+    --gray: #888880;
+    --shadow: rgba(20,10,0,0.18);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Special Elite', cursive;
+    overflow-x: hidden;
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='6' fill='%23cc1111' stroke='%231a1008' stroke-width='2'/%3E%3C/svg%3E") 16 16, auto;
+  }
+
+  /* TEXTURES */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:9999;
+    opacity:0.5;
+  }
+
+  /* SCANLINES */
+  body::after {
+    content:'';
+    position:fixed;
+    inset:0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+    pointer-events:none;
+    z-index:9998;
+  }
+
+  /* PAPER TEXTURE */
+  .paper-bg {
+    background: var(--paper);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04' numOctaves='5' seed='2' stitchTiles='stitch'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='3'/%3E%3C/filter%3E%3Crect width='200' height='200' fill='%23f5f0e8' filter='url(%23p)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+
+  /* FONTS */
+  .font-bangers { font-family: 'Bangers', cursive; }
+  .font-marker { font-family: 'Permanent Marker', cursive; }
+  .font-elite { font-family: 'Special Elite', cursive; }
+  .font-oswald { font-family: 'Oswald', sans-serif; }
+  .font-creep { font-family: 'Creepster', cursive; }
+
+  /* BORDERS */
+  .border-ink { border: 3px solid var(--ink); }
+  .border-ink-thick { border: 5px solid var(--ink); }
+  .border-red { border: 3px solid var(--red); }
+
+  /* SHADOWS */
+  .shadow-ink { box-shadow: 4px 4px 0 var(--ink); }
+  .shadow-red { box-shadow: 4px 4px 0 var(--red); }
+  .shadow-brutal { box-shadow: 6px 6px 0 var(--ink); }
+
+  /* TAPE effect */
+  .tape::before {
+    content:'';
+    position:absolute;
+    top:-14px; left:50%; transform:translateX(-50%);
+    width:80px; height:28px;
+    background: rgba(255,220,100,0.7);
+    border: 1px solid rgba(180,150,50,0.5);
+    z-index:2;
+  }
+
+  /* STICKER */
+  .sticker {
+    position:absolute;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-family: 'Bangers', cursive;
+    font-size: 1rem;
+    letter-spacing:1px;
+    transform: rotate(-4deg);
+    box-shadow: 3px 3px 0 var(--ink);
+    z-index:10;
+    white-space:nowrap;
+  }
+  .sticker.red { background: var(--red); color:#fff; }
+  .sticker.green { background: var(--green); color:#fff; }
+  .sticker.white { background: #fff; }
+
+  /* SPEECH BUBBLE */
+  .bubble {
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    padding: 10px 18px;
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .bubble::after {
+    content:'';
+    position:absolute;
+    bottom:-18px; left:24px;
+    border: 10px solid transparent;
+    border-top-color: var(--ink);
+  }
+  .bubble::before {
+    content:'';
+    position:absolute;
+    bottom:-12px; left:26px;
+    border: 8px solid transparent;
+    border-top-color: #fff;
+    z-index:1;
+  }
+
+  /* ARROW */
+  .meme-arrow {
+    display:inline-block;
+    color: var(--red);
+    font-family: 'Bangers', cursive;
+    font-size: 2rem;
+    animation: arrowPulse 0.8s infinite alternate;
+  }
+  @keyframes arrowPulse {
+    from { transform: translateX(0); }
+    to { transform: translateX(8px); }
+  }
+
+  /* LIVE badge */
+  .live-badge {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:#cc1111;
+    color:#fff;
+    font-family:'Bangers',cursive;
+    font-size:1.1rem;
+    letter-spacing:2px;
+    padding:3px 12px;
+    border-radius:4px;
+    border:2px solid var(--ink);
+  }
+  .live-dot {
+    width:8px; height:8px;
+    background:#fff;
+    border-radius:50%;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* FLOAT animations */
+  @keyframes float1 { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-14px) rotate(2deg)} }
+  @keyframes float2 { 0%,100%{transform:translateY(0) rotate(5deg)} 50%{transform:translateY(-20px) rotate(-2deg)} }
+  @keyframes float3 { 0%,100%{transform:translateY(0) rotate(-8deg)} 50%{transform:translateY(-10px) rotate(-4deg)} }
+  @keyframes wiggle { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes boing { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  @keyframes glitch {
+    0%{text-shadow: 2px 0 #cc1111, -2px 0 #0044ff}
+    20%{text-shadow: -2px 0 #cc1111, 2px 0 #0044ff}
+    40%{text-shadow: 2px 2px #cc1111, -2px -2px #0044ff}
+    60%{text-shadow: -4px 0 #cc1111, 4px 0 #0044ff}
+    80%{text-shadow: 2px -2px #cc1111, -2px 2px #0044ff}
+    100%{text-shadow: 2px 0 #cc1111, -2px 0 #0044ff}
+  }
+  @keyframes marquee { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
+  @keyframes stampIn { 0%{transform:scale(3) rotate(-20deg);opacity:0} 60%{transform:scale(0.9) rotate(3deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+  @keyframes popIn { 0%{transform:scale(0) rotate(-10deg);opacity:0} 80%{transform:scale(1.1) rotate(2deg)} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+  @keyframes ticker { from{transform:translateX(100%)} to{transform:translateX(-100%)} }
+
+  .float-1 { animation: float1 4s ease-in-out infinite; }
+  .float-2 { animation: float2 5s ease-in-out infinite; }
+  .float-3 { animation: float3 3.5s ease-in-out infinite; }
+  .wiggle { animation: wiggle 2s ease-in-out infinite; }
+  .boing { animation: boing 2s ease-in-out infinite; }
+  .spin-slow { animation: spin 8s linear infinite; }
+  .glitch-text { animation: glitch 0.5s infinite; }
+
+  /* WARNING LABEL */
+  .warning {
+    background: repeating-linear-gradient(45deg, var(--yellow) 0, var(--yellow) 12px, var(--ink) 12px, var(--ink) 24px);
+    color: #fff;
+    padding: 4px 14px;
+    font-family:'Bangers',cursive;
+    letter-spacing:2px;
+    border:3px solid var(--ink);
+    font-size: 0.9rem;
+  }
+
+  /* STICKY NOTE */
+  .sticky {
+    background: #fffb8c;
+    border: 1px solid #e0d500;
+    padding: 12px 16px;
+    font-family:'Permanent Marker',cursive;
+    font-size:0.9rem;
+    box-shadow: 3px 3px 8px rgba(0,0,0,0.15);
+    transform: rotate(-2deg);
+    position:relative;
+  }
+  .sticky::before {
+    content:'';
+    position:absolute;
+    top:0; left:50%; transform:translateX(-50%);
+    width:30px; height:6px;
+    background: rgba(255,220,50,0.8);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  /* SECTION DIVIDERS */
+  .divider-zigzag {
+    width:100%;
+    height:40px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 20'%3E%3Cpath d='M0 20 L20 0 L40 20' fill='%231a1008'/%3E%3C/svg%3E") repeat-x;
+    background-size: 40px 20px;
+  }
+
+  /* BUTTONS */
+  .btn-meme {
+    display:inline-block;
+    font-family:'Bangers',cursive;
+    letter-spacing:2px;
+    font-size:1.3rem;
+    padding: 10px 28px;
+    border: 3px solid var(--ink);
+    background: var(--yellow);
+    color: var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    text-decoration:none;
+    transition: transform 0.1s, box-shadow 0.1s;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn-meme:hover { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+  .btn-meme:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
+  .btn-meme.red { background: var(--red); color:#fff; }
+  .btn-meme.black { background: var(--ink); color:#fff; }
+  .btn-meme.white { background: #fff; }
+  .btn-meme.green { background: var(--green); color:#fff; }
+
+  /* SECTION headers */
+  .section-stamp {
+    display:inline-block;
+    font-family:'Bangers',cursive;
+    font-size:3.5rem;
+    letter-spacing:4px;
+    color: var(--red);
+    border: 6px solid var(--red);
+    padding: 4px 24px;
+    transform: rotate(-2deg);
+    text-shadow: 3px 3px 0 rgba(180,0,0,0.2);
+    position:relative;
+  }
+
+  /* CONSPIRACY BOARD */
+  .conspiracy-bg {
+    background: #2a1f0e;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
+  }
+
+  /* TORN EDGE */
+  .torn-top {
+    position:relative;
+  }
+  .torn-top::before {
+    content:'';
+    position:absolute;
+    top:-20px; left:0; right:0; height:20px;
+    background: inherit;
+    clip-path: polygon(0% 100%, 2% 0%, 4% 100%, 6% 0%, 8% 100%, 10% 0%, 12% 100%, 14% 0%, 16% 100%, 18% 0%, 20% 100%, 22% 0%, 24% 100%, 26% 0%, 28% 100%, 30% 0%, 32% 100%, 34% 0%, 36% 100%, 38% 0%, 40% 100%, 42% 0%, 44% 100%, 46% 0%, 48% 100%, 50% 0%, 52% 100%, 54% 0%, 56% 100%, 58% 0%, 60% 100%, 62% 0%, 64% 100%, 66% 0%, 68% 100%, 70% 0%, 72% 100%, 74% 0%, 76% 100%, 78% 0%, 80% 100%, 82% 0%, 84% 100%, 86% 0%, 88% 100%, 90% 0%, 92% 100%, 94% 0%, 96% 100%, 98% 0%, 100% 100%);
+  }
+
+  /* COUNTER */
+  .fake-counter {
+    font-family:'Bangers',cursive;
+    font-size:1.2rem;
+    background: var(--ink);
+    color: var(--yellow);
+    padding: 4px 14px;
+    letter-spacing:2px;
+    border: 2px solid var(--yellow);
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    overflow:hidden;
+    background: var(--red);
+    border-top: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    padding: 6px 0;
+    white-space:nowrap;
+  }
+  .ticker-content {
+    display:inline-block;
+    font-family:'Bangers',cursive;
+    font-size:1.2rem;
+    letter-spacing:2px;
+    color:#fff;
+    animation: ticker 30s linear infinite;
+  }
+
+  /* STRING LINE (conspiracy) */
+  .string-line {
+    position:absolute;
+    background: #cc3300;
+    height:2px;
+    transform-origin: left center;
+    opacity:0.8;
+  }
+
+  /* COPY BUTTON */
+  .copy-btn {
+    cursor:pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { opacity:0.8; }
+
+  /* MEME GALLERY */
+  .meme-card {
+    position:relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor:pointer;
+  }
+  .meme-card:hover { transform: scale(1.06) rotate(0deg) !important; box-shadow: 8px 8px 0 var(--ink) !important; z-index:20; }
+
+  /* PHASE CARD */
+  .phase-card {
+    background: var(--paper);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    position:relative;
+    overflow:visible;
+  }
+
+  /* REACTION POPUP */
+  .reaction-popup {
+    position:fixed;
+    pointer-events:none;
+    font-family:'Bangers',cursive;
+    font-size:1.4rem;
+    background:#fff;
+    border:3px solid var(--ink);
+    padding:6px 14px;
+    box-shadow:4px 4px 0 var(--ink);
+    border-radius:8px;
+    z-index:99999;
+    opacity:0;
+    transition: opacity 0.3s;
+    white-space:nowrap;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:10px; }
+  ::-webkit-scrollbar-track { background: var(--dirty); }
+  ::-webkit-scrollbar-thumb { background: var(--ink); border: 2px solid var(--dirty); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--red); }
+
+  /* HIDDEN EASTER EGG */
+  .easter-egg {
+    position:fixed;
+    bottom:20px; left:20px;
+    font-family:'Bangers',cursive;
+    font-size:0.7rem;
+    color: rgba(100,80,60,0.3);
+    pointer-events:none;
+    z-index:100;
+    letter-spacing:1px;
+  }
+
+  /* VHS overlay */
+  .vhs-line {
+    position:fixed;
+    left:0; right:0; height:3px;
+    background: rgba(255,255,255,0.08);
+    pointer-events:none;
+    z-index:9997;
+    animation: vhsScan 6s linear infinite;
+  }
+  @keyframes vhsScan { from{top:0} to{top:100vh} }
+
+  /* STEP CARDS */
+  .step-card {
+    background: #fff;
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .step-card:hover { transform: translateY(-6px) rotate(1deg); box-shadow: 10px 10px 0 var(--ink); }
+
+  /* CHART EMBED */
+  #dexscreener-embed { width:100%; height:500px; border:4px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+
+  /* CA display */
+  .ca-display {
+    font-family:'Special Elite', cursive;
+    font-size:0.85rem;
+    letter-spacing:2px;
+    background: var(--ink);
+    color: var(--yellow);
+    padding: 10px 20px;
+    border: 3px solid var(--yellow);
+    word-break:break-all;
+  }
+
+  /* GLITCH HERO TEXT */
+  @keyframes heroGlitch {
+    0%,92%,100%{clip-path:inset(0 0 100% 0)}
+    93%{clip-path:inset(10% 0 50% 0)}
+    95%{clip-path:inset(60% 0 20% 0)}
+    97%{clip-path:inset(30% 0 0% 0)}
+  }
+  .glitch-layer {
+    position:absolute;
+    inset:0;
+    color: var(--red);
+    animation: heroGlitch 4s infinite;
+  }
+  .glitch-layer2 {
+    position:absolute;
+    inset:0;
+    color: #0044ff;
+    animation: heroGlitch 4s 0.1s infinite;
+    transform: translateX(3px);
+  }
+
+  /* HERO BG */
+  .hero-bg {
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(204,17,17,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0,68,204,0.07) 0%, transparent 40%);
+  }
+
+  /* ABOUT BG */
+  .about-bg {
+    background: #f0e8d5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='%231a1008' opacity='0.08'/%3E%3C/svg%3E");
+  }
+
+  /* TOKENOMICS */
+  .tok-card {
+    background: var(--paper);
+    border: 4px solid var(--ink);
+    box-shadow: 6px 6px 0 var(--ink);
+    padding:24px;
+    text-align:center;
+    position:relative;
+    transition: transform 0.2s;
+  }
+  .tok-card:hover { transform: rotate(0deg) scale(1.04); }
+
+  /* ROADMAP */
+  .road-section {
+    background: #1a1008;
+  }
+
+  /* SOCIALS */
+  .socials-bg {
+    background: var(--ink);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect x='0' y='0' width='80' height='80' fill='none' stroke='%23ffffff08' stroke-width='1'/%3E%3C/svg%3E");
+  }
+
+  /* HOVER ZOOM meme */
+  .meme-img-wrap { overflow:hidden; }
+  .meme-img-wrap img { transition: transform 0.4s; }
+  .meme-img-wrap:hover img { transform: scale(1.1); }
+
+  /* ANIMATED STAMP */
+  .stamp-anim { animation: stampIn 0.6s cubic-bezier(.36,.07,.19,.97) both; }
+
+  /* FOOTER */
+  footer {
+    background: #0f0a04;
+    color: rgba(245,240,232,0.5);
+    font-family:'Special Elite',cursive;
+    font-size:0.8rem;
+    text-align:center;
+    padding:20px;
+    border-top:4px solid var(--red);
+  }
+
+  /* MOBILE */
+  @media(max-width:768px) {
+    .section-stamp { font-size:2.2rem; }
+    #dexscreener-embed { height:350px; }
+  }
+</style>
+</head>
+<body class="paper-bg">
+
+<!-- VHS SCANLINE -->
+<div class="vhs-line"></div>
+<!-- EASTER EGG -->
+<div class="easter-egg">♦ YOU FOUND THE BABY ♦ CA: 6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump</div>
+
+<!-- REACTION POPUP -->
+<div class="reaction-popup" id="reactionPopup">😂 BASED</div>
+
+<!-- ==================== TICKER ==================== -->
+<div class="ticker-wrap">
+  <span class="ticker-content">
+    ☠ BABYTROLL IS LIVE ☠ &nbsp;&nbsp; 0/0 TAX &nbsp;&nbsp; LP BURNED &nbsp;&nbsp; CONTRACT RENOUNCED &nbsp;&nbsp; SOLANA NETWORK &nbsp;&nbsp;
+    CA: 6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump &nbsp;&nbsp;
+    ☠ BABYTROLL IS LIVE ☠ &nbsp;&nbsp; HE IS JUST A BABY &nbsp;&nbsp; OR IS HE? &nbsp;&nbsp;
+    BUY NOW ON RAYDIUM &nbsp;&nbsp; ☠ BABYTROLL IS LIVE ☠ &nbsp;&nbsp; 0/0 TAX &nbsp;&nbsp; LP BURNED &nbsp;&nbsp; CONTRACT RENOUNCED &nbsp;&nbsp;
+  </span>
+</div>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero-bg relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 py-20" id="hero">
+
+  <!-- BG DOODLES -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.07;" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="200" x2="400" y2="50" stroke="#1a1008" stroke-width="2" stroke-dasharray="10,8"/>
+    <line x1="100%" y1="100" x2="60%" y2="300" stroke="#cc1111" stroke-width="2" stroke-dasharray="10,8"/>
+    <circle cx="10%" cy="30%" r="80" stroke="#1a1008" stroke-width="2" fill="none"/>
+    <circle cx="90%" cy="70%" r="60" stroke="#cc1111" stroke-width="2" fill="none"/>
+    <path d="M50 50 Q200 20 300 80 T550 60" stroke="#1a1008" stroke-width="2" fill="none" stroke-dasharray="8,6"/>
+    <text x="5%" y="95%" font-family="Bangers" font-size="14" fill="#1a1008" opacity="0.5">DEGEN LEVEL: OVER 9000</text>
+    <text x="70%" y="8%" font-family="Bangers" font-size="12" fill="#cc1111" opacity="0.5">HA HA HA HA HA</text>
+  </svg>
+
+  <!-- FLOATING STICKERS BACKGROUND -->
+  <div class="absolute" style="top:5%;left:3%;transform:rotate(-12deg);">
+    <div class="sticker red" style="font-size:0.8rem;">⚠ DANGER</div>
+  </div>
+  <div class="absolute" style="top:8%;right:5%;transform:rotate(8deg);">
+    <div class="sticker" style="font-size:0.8rem;">100% BASED</div>
+  </div>
+  <div class="absolute" style="bottom:20%;left:2%;transform:rotate(-5deg);" data-aos="fade-right" data-aos-delay="300">
+    <div class="sticker green" style="font-size:0.8rem;">COMMUNITY OWNED</div>
+  </div>
+  <div class="absolute" style="top:30%;right:2%;" data-aos="fade-left" data-aos-delay="400">
+    <div class="warning" style="font-size:0.75rem;">WARNING: EXTREME TROLLING</div>
+  </div>
+
+  <!-- LIVE BADGES -->
+  <div class="absolute top-4 right-4 flex flex-col gap-2 items-end" style="z-index:20;">
+    <div class="live-badge"><div class="live-dot"></div>LIVE ON SOLANA</div>
+  </div>
+  <div class="absolute top-4 left-4 flex flex-col gap-2 items-start" style="z-index:20;">
+    <div class="live-badge" style="background:#0044ff;"><div class="live-dot"></div>RAYDIUM</div>
+  </div>
+
+  <!-- MAIN LOGO -->
+  <div class="relative mb-4 float-1" style="z-index:10;max-width:220px;">
+    <img src="logo.png" alt="BABYTROLL" style="width:220px;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);background:#fff;padding:8px;transform:rotate(-2deg);">
+    <!-- TAPE -->
+    <div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:90px;height:30px;background:rgba(255,220,100,0.7);border:1px solid rgba(180,150,50,0.5);"></div>
+    <div class="bubble" style="position:absolute;top:-70px;right:-40px;font-size:1rem;transform:rotate(6deg);">PROBLEM?</div>
+  </div>
+
+  <!-- MAIN HEADLINE -->
+  <div class="text-center relative" style="z-index:10;">
+    <div style="position:relative;display:inline-block;">
+      <h1 class="font-bangers" style="font-size:clamp(3rem,10vw,7rem);letter-spacing:4px;color:var(--ink);line-height:0.9;text-shadow:4px 4px 0 rgba(0,0,0,0.15);">
+        BABY<span style="color:var(--red);">TROLL</span>
+      </h1>
+      <div class="glitch-layer font-bangers" style="font-size:clamp(3rem,10vw,7rem);letter-spacing:4px;line-height:0.9;transform:translateX(-3px);">BABYTROLL</div>
+      <div class="glitch-layer2 font-bangers" style="font-size:clamp(3rem,10vw,7rem);letter-spacing:4px;line-height:0.9;">BABYTROLL</div>
+    </div>
+
+    <div class="font-bangers mt-2" style="font-size:clamp(1.1rem,3.5vw,2rem);letter-spacing:3px;color:var(--red);">
+      THE INTERNET'S MOST DANGEROUS BABY
+    </div>
+    <div class="font-elite mt-2" style="font-size:1rem;max-width:500px;margin:0 auto;opacity:0.8;">
+      Born from pure trolling. Raised by the internet. Powered by absolute chaos.<br>
+      <span style="color:var(--red);font-weight:bold;">And he's on Solana now. God help us all.</span>
+    </div>
+  </div>
+
+  <!-- BANNER GIF -->
+  <div class="relative mt-6 float-2" style="z-index:10;max-width:520px;width:100%;">
+    <img src="banner.gif" alt="BABYTROLL Banner" style="width:100%;border:5px solid var(--ink);box-shadow:8px 8px 0 var(--ink);transform:rotate(1deg);">
+    <div class="sticker" style="position:absolute;bottom:-14px;right:-14px;transform:rotate(8deg);">NO REFUNDS</div>
+  </div>
+
+  <!-- CTA BUTTONS -->
+  <div class="flex flex-wrap gap-3 justify-center mt-8" style="z-index:10;" data-aos="fade-up" data-aos-delay="200">
+    <a href="https://raydium.io/swap/?inputMint=sol&outputMint=6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump" target="_blank" class="btn-meme red" style="font-size:1.5rem;">BUY NOW</a>
+    <a href="https://dexscreener.com/solana/34utpx3zyyfc5gvqdxwjqlf77bu5ebb6o3c2xynpktzl" target="_blank" class="btn-meme black">VIEW CHART</a>
+    <a href="https://x.com/babytrollsolana" target="_blank" class="btn-meme white">TWITTER/X</a>
+    <a href="https://t.me/babytroll_memecoin" target="_blank" class="btn-meme" style="background:#229ED9;color:#fff;">TELEGRAM</a>
+  </div>
+
+  <!-- CA SECTION -->
+  <div class="mt-10 text-center" style="z-index:10;width:100%;max-width:640px;" data-aos="fade-up" data-aos-delay="300">
+    <div class="font-bangers" style="font-size:1rem;letter-spacing:3px;color:var(--gray);margin-bottom:8px;">CONTRACT ADDRESS</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div class="ca-display" style="width:100%;text-align:center;word-break:break-all;font-size:clamp(0.6rem,1.8vw,0.9rem);">6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump</div>
+      <button class="btn-meme copy-btn" onclick="copyCA(this)" style="font-size:1rem;padding:10px 32px;">COPY CA</button>
+    </div>
+  </div>
+
+  <!-- FLOATING MEME CAPTIONS -->
+  <div class="absolute float-3" style="bottom:12%;left:4%;transform:rotate(-6deg);z-index:8;">
+    <div class="font-marker" style="font-size:1.1rem;color:var(--ink);background:rgba(245,240,232,0.9);padding:4px 10px;border:2px solid var(--ink);">
+      i trolled u lmao
+    </div>
+  </div>
+  <div class="absolute float-1" style="bottom:18%;right:4%;transform:rotate(4deg);z-index:8;">
+    <div class="font-marker" style="font-size:0.95rem;color:var(--red);background:rgba(245,240,232,0.9);padding:4px 10px;border:2px solid var(--red);">
+      ≥) he comin
+    </div>
+  </div>
+
+  <!-- ARROWS POINTING DOWN -->
+  <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-0" style="z-index:10;">
+    <div class="meme-arrow" style="font-size:2.5rem;animation-delay:0s;">↓</div>
+    <div class="font-bangers" style="font-size:0.9rem;letter-spacing:2px;color:var(--gray);">SCROLL OR ELSE</div>
+  </div>
+</section>
+
+<!-- ==================== DIVIDER ==================== -->
+<div class="divider-zigzag" style="background:#1a1008;"></div>
+
+<!-- ==================== ABOUT / LORE ==================== -->
+<section class="about-bg relative py-20 px-4 overflow-hidden" id="about">
+
+  <!-- CONSPIRACY STRINGS (decorative SVG) -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.25;" xmlns="http://www.w3.org/2000/svg">
+    <line x1="10%" y1="5%" x2="45%" y2="30%" stroke="#cc1111" stroke-width="2"/>
+    <line x1="45%" y1="30%" x2="80%" y2="10%" stroke="#cc1111" stroke-width="2"/>
+    <line x1="80%" y1="10%" x2="60%" y2="60%" stroke="#cc1111" stroke-width="2"/>
+    <line x1="20%" y1="70%" x2="60%" y2="60%" stroke="#cc1111" stroke-width="2"/>
+    <line x1="20%" y1="70%" x2="10%" y2="5%" stroke="#cc3300" stroke-width="1" stroke-dasharray="6,4"/>
+    <circle cx="10%" cy="5%" r="5" fill="#cc1111"/>
+    <circle cx="45%" cy="30%" r="5" fill="#cc1111"/>
+    <circle cx="80%" cy="10%" r="5" fill="#cc1111"/>
+    <circle cx="60%" cy="60%" r="5" fill="#cc1111"/>
+    <circle cx="20%" cy="70%" r="5" fill="#cc1111"/>
+  </svg>
+
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12" data-aos="zoom-in">
+      <div class="section-stamp">THE LORE</div>
+      <div class="font-bangers mt-2" style="font-size:1.3rem;letter-spacing:3px;color:var(--gray);">CLASSIFIED // TOP MEME INTELLIGENCE</div>
+    </div>
+
+    <!-- CONSPIRACY BOARD LAYOUT -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+
+      <!-- PINNED NOTE 1 -->
+      <div data-aos="fade-right" data-aos-delay="100" class="relative" style="margin-top:20px;">
+        <div style="background:#fff;border:3px solid var(--ink);padding:24px;box-shadow:5px 5px 0 var(--ink);transform:rotate(-2deg);position:relative;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:20px;height:20px;background:var(--red);border-radius:50%;border:2px solid var(--ink);"></div>
+          <div class="font-marker" style="font-size:0.95rem;line-height:1.6;">
+            "They thought <span style="color:var(--red);">TROLL</span> was the final form.<br><br>
+            But somewhere deep inside the internet…<br><br>
+            something smaller was evolving."
+          </div>
+        </div>
+        <div class="sticky" style="margin-top:12px;transform:rotate(3deg);">
+          SOURCE: deep web forum, 4AM post
+        </div>
+      </div>
+
+      <!-- MAIN LORE TEXT -->
+      <div data-aos="fade-up" data-aos-delay="200" style="grid-column: span 1;">
+        <div style="background:rgba(245,240,232,0.95);border:4px solid var(--ink);padding:28px;box-shadow:7px 7px 0 var(--ink);position:relative;">
+          <div class="font-bangers" style="font-size:1.5rem;letter-spacing:2px;color:var(--red);margin-bottom:12px;">ORIGIN STORY</div>
+          <div class="font-elite" style="font-size:0.9rem;line-height:1.8;">
+            In the darkest corner of the internet, where rage comics still breathe and trollface never sleeps,
+            a new entity was born.<br><br>
+            <span style="color:var(--red);font-weight:bold;">BABYTROLL</span> — the offspring of pure chaos.<br><br>
+            Smaller than TROLL. More dangerous than PEPE.<br>
+            Immune to reason. Allergic to FUD.<br><br>
+            He crawled out of a /b/ thread in 2009,
+            waited patiently for 15 years,
+            and chose Solana as his final form.
+          </div>
+          <div class="meme-arrow" style="position:absolute;bottom:-20px;right:20px;font-size:3rem;transform:rotate(90deg);">→</div>
+        </div>
+      </div>
+
+      <!-- PINNED NOTE 3 -->
+      <div data-aos="fade-left" data-aos-delay="300" style="margin-top:30px;">
+        <div style="background:#ffecec;border:3px solid var(--red);padding:20px;box-shadow:5px 5px 0 var(--red);transform:rotate(2deg);position:relative;">
+          <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:20px;height:20px;background:var(--yellow);border-radius:50%;border:2px solid var(--ink);"></div>
+          <div class="font-bangers" style="font-size:1.1rem;color:var(--red);margin-bottom:8px;">EYEWITNESS REPORT:</div>
+          <div class="font-marker" style="font-size:0.85rem;line-height:1.6;">
+            "i saw him in my blockfolio.<br>
+            i didn't buy.<br><br>
+            my portfolio is still red.<br><br>
+            coincidence?<br><br>
+            i think NOT."<br><br>
+            <span style="font-size:0.75rem;color:var(--gray);">— anonymous degen</span>
+          </div>
+        </div>
+        <div class="warning" style="margin-top:10px;display:block;text-align:center;">CREDIBLE WITNESS</div>
+      </div>
+    </div>
+
+    <!-- BOTTOM LORE ROW -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+      <div data-aos="fade-right" data-aos-delay="400" style="background:#1a1008;color:#f5f0e8;padding:24px;border:3px solid var(--yellow);box-shadow:6px 6px 0 var(--yellow);position:relative;transform:rotate(-1deg);">
+        <div class="font-bangers" style="font-size:1.3rem;color:var(--yellow);letter-spacing:2px;margin-bottom:10px;">⚠ CLASSIFIED INTEL ⚠</div>
+        <div class="font-elite" style="font-size:0.9rem;line-height:1.8;opacity:0.9;">
+          Sources confirm he has absorbed 100% of the internet's irony.<br>
+          He understands every meme format simultaneously.<br>
+          He has never been rugpulled. He IS the rugpull.<br>
+          <span style="color:var(--yellow);">Except he isn't. LP is burned. Verified. Based.</span>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="450" class="flex flex-col gap-4">
+        <div class="sticky" style="transform:rotate(-3deg);">he was always here. you just didn't buy early enough.</div>
+        <div class="sticky" style="transform:rotate(2deg);background:#e8ffee;">TROLL was his dad. chaos is his mom.</div>
+        <div class="bubble" style="display:inline-block;">HE IS NOT A FINANCIAL ADVISOR.<br>HE IS A FINANCIAL PROPHECY.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING IMAGE -->
+  <div class="absolute float-3 hidden md:block" style="top:10%;right:2%;transform:rotate(8deg);z-index:5;">
+    <img src="meme1.png" style="width:140px;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);">
+    <div class="sticker" style="position:absolute;bottom:-12px;left:-8px;font-size:0.75rem;transform:rotate(-6deg);">EVIDENCE #1</div>
+  </div>
+</section>
+
+<!-- ==================== TOKENOMICS ==================== -->
+<style>
+#tokenomics { background: #1a1008; }
+
+/* Corkboard texture overlay */
+.corkboard-bg {
+  background-color: #2e1f0a;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='cork'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='5'/%3E%3CfeColorMatrix type='matrix' values='0.4 0.2 0 0 0.18  0.3 0.15 0 0 0.1  0.1 0.05 0 0 0.04  0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23cork)'/%3E%3C/svg%3E");
+}
+
+/* Each item on the board — unique, no absolute positioning */
+.tok-item {
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.tok-item:hover { z-index: 10; }
+
+/* Thumbtack shared style */
+.thumbtack {
+  position: absolute;
+  top: -10px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.3);
+  z-index: 5;
+}
+
+/* Paper float animations per card */
+@keyframes pf1 { 0%,100%{transform:rotate(-3deg) translateY(0)} 60%{transform:rotate(-2.5deg) translateY(-6px)} }
+@keyframes pf2 { 0%,100%{transform:rotate(2deg) translateY(0)} 60%{transform:rotate(2.5deg) translateY(-8px)} }
+@keyframes pf3 { 0%,100%{transform:rotate(-5deg) translateY(0)} 60%{transform:rotate(-4deg) translateY(-5px)} }
+@keyframes pf4 { 0%,100%{transform:rotate(4deg) translateY(0)} 60%{transform:rotate(4.5deg) translateY(-7px)} }
+@keyframes pf5 { 0%,100%{transform:rotate(-1deg) translateY(0)} 60%{transform:rotate(-0.5deg) translateY(-6px)} }
+@keyframes pf6 { 0%,100%{transform:rotate(3deg) translateY(0)} 60%{transform:rotate(3.5deg) translateY(-5px)} }
+
+.pf1 { animation: pf1 4.2s ease-in-out infinite; }
+.pf2 { animation: pf2 5s ease-in-out infinite; }
+.pf3 { animation: pf3 3.8s ease-in-out infinite 0.4s; }
+.pf4 { animation: pf4 4.6s ease-in-out infinite 0.8s; }
+.pf5 { animation: pf5 5.4s ease-in-out infinite 0.2s; }
+.pf6 { animation: pf6 4s ease-in-out infinite 1s; }
+
+/* Red string connector row */
+.tok-string-row {
+  position: relative;
+  height: 30px;
+  margin: 4px 0;
+}
+.tok-string-row svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Blink dot */
+.blink-red {
+  display:inline-block;
+  width:8px;height:8px;
+  background:var(--red);
+  border-radius:50%;
+  animation:blink 0.7s infinite;
+  box-shadow:0 0 5px var(--red);
+  vertical-align: middle;
+}
+</style>
+
+<section class="relative py-20 px-4 overflow-hidden corkboard-bg" id="tokenomics">
+
+  <div class="max-w-5xl mx-auto" style="position:relative;z-index:2;">
+
+    <!-- HEADER -->
+    <div class="text-center mb-14">
+      <div style="display:inline-block;position:relative;">
+        <div class="font-bangers" style="font-size:clamp(2.8rem,9vw,5.5rem);letter-spacing:5px;color:var(--yellow);text-shadow:3px 3px 0 rgba(0,0,0,0.7);">TOKENOMICS</div>
+        <svg style="position:absolute;bottom:-4px;left:0;width:100%;height:10px;" viewBox="0 0 300 10" preserveAspectRatio="none">
+          <path d="M2 8 C60 2,120 9,180 5 C220 2,265 8,298 6" stroke="#cc1111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div style="margin-top:14px;">
+        <span style="background:var(--red);color:#fff;font-family:'Bangers',cursive;font-size:0.9rem;letter-spacing:3px;padding:4px 16px;border:2px solid rgba(255,255,255,0.3);">
+          &#9679; CLASSIFIED EVIDENCE BOARD — DO NOT SHOW REGULATORS
+        </span>
+      </div>
+    </div>
+
+    <!-- ROW 1: 3 cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px 32px;margin-bottom:40px;">
+
+      <!-- CARD 1: 0/0 TAX -->
+      <div style="position:relative;padding-top:18px;animation:pf1 4.2s ease-in-out infinite;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#cc8800;border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#fffb8c;border:1px solid #d4c400;padding:20px 18px 24px;box-shadow:5px 5px 16px rgba(0,0,0,0.5);transform:rotate(-3deg);position:relative;">
+          <div style="font-family:'Bangers',cursive;font-size:0.65rem;letter-spacing:3px;color:#888;margin-bottom:6px;border-bottom:1px dashed #ccc;padding-bottom:4px;">EXHIBIT A // FINANCIAL</div>
+          <div class="font-bangers" style="font-size:2.4rem;color:#1a1008;letter-spacing:2px;line-height:1;">0/0 TAX</div>
+          <div class="font-marker" style="font-size:0.85rem;line-height:1.7;margin-top:10px;color:#333;">they take nothing.<br>not even your dignity.</div>
+          <div style="margin-top:12px;font-family:'Bangers',cursive;font-size:0.72rem;color:var(--red);border-top:1px dashed #bba;padding-top:6px;">"BABYTROLL FAILED MATH<br>SO TAX IS IMPOSSIBLE"</div>
+          <div style="position:absolute;bottom:10px;right:8px;border:3px solid rgba(0,140,50,0.65);color:rgba(0,140,50,0.65);font-family:'Bangers',cursive;font-size:0.75rem;padding:2px 8px;letter-spacing:2px;transform:rotate(-10deg);">CONFIRMED</div>
+        </div>
+      </div>
+
+      <!-- CARD 2: LP BURNED -->
+      <div style="position:relative;padding-top:18px;animation:pf2 5s ease-in-out infinite;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--red);border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#f8f4e4;border:2px solid #9a8a5a;padding:20px 18px;box-shadow:5px 5px 0 rgba(0,0,0,0.5);background-image:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(100,80,40,0.09) 22px,rgba(100,80,40,0.09) 23px);transform:rotate(2.5deg);position:relative;">
+          <div style="text-align:center;border-bottom:2px solid #9a8a5a;padding-bottom:6px;margin-bottom:10px;">
+            <div style="font-family:'Bangers',cursive;font-size:0.65rem;letter-spacing:3px;color:#5a4a20;">DEPT. OF MEME TREASURY</div>
+            <div style="font-family:'Special Elite',cursive;font-size:0.6rem;color:#8a7a50;">OFFICIAL BURN CERTIFICATE NO. 420</div>
+          </div>
+          <div class="font-bangers" style="font-size:2.2rem;color:var(--red);letter-spacing:2px;text-align:center;line-height:1;">LP BURNED</div>
+          <div style="font-family:'Special Elite',cursive;font-size:0.82rem;line-height:1.8;margin-top:10px;color:#3a2810;">Liquidity incinerated.<br>Funds sent to the void.<br>No dev can undo this.</div>
+          <div class="font-marker" style="font-size:0.75rem;color:var(--red);margin-top:8px;">"LP THROWN INTO THE OCEAN"</div>
+          <div style="position:absolute;bottom:10px;right:8px;border:3px solid rgba(0,130,50,0.6);color:rgba(0,130,50,0.6);font-family:'Bangers',cursive;font-size:0.75rem;padding:2px 8px;letter-spacing:2px;transform:rotate(-8deg);">VERIFIED</div>
+        </div>
+      </div>
+
+      <!-- CARD 3: CONTRACT RENOUNCED -->
+      <div style="position:relative;padding-top:18px;animation:pf3 3.8s ease-in-out infinite 0.4s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#1144cc;border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#fff;border:2px solid #ddd;border-left:6px solid var(--red);padding:18px 16px 18px 22px;box-shadow:5px 5px 10px rgba(0,0,0,0.35);background-image:repeating-linear-gradient(0deg,transparent,transparent 24px,#cce0ff 24px,#cce0ff 25px);transform:rotate(-4deg);position:relative;">
+          <div style="font-family:'Bangers',cursive;font-size:0.7rem;letter-spacing:2px;color:var(--ink);margin-bottom:8px;">CONTRACT STATUS:</div>
+          <div class="font-bangers" style="font-size:2rem;color:var(--red);letter-spacing:1px;line-height:1.1;">RENOUNCED<br>&amp; GONE</div>
+          <div style="font-size:0.82rem;line-height:1.9;margin-top:10px;color:#333;font-family:'Special Elite',cursive;">no devs can touch it<br>no rugs possible<br>it just EXISTS now</div>
+          <div class="font-marker" style="font-size:0.72rem;color:var(--red);margin-top:8px;border-top:1px dashed #bbb;padding-top:6px;">"ADULT SUPERVISION FAILED<br>SO COMMUNITY RUNS IT"</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RED STRING DIVIDER -->
+    <div style="display:flex;align-items:center;gap:10px;margin:8px 0 36px;">
+      <div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+      <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#cc3300 0,#cc3300 8px,transparent 8px,transparent 16px);opacity:0.7;"></div>
+      <div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+      <div style="flex:1;height:2px;background:repeating-linear-gradient(90deg,#cc3300 0,#cc3300 8px,transparent 8px,transparent 16px);opacity:0.7;"></div>
+      <div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+    </div>
+
+    <!-- ROW 2: 3 cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:40px 32px;margin-bottom:40px;">
+
+      <!-- CARD 4: TOTAL SUPPLY -->
+      <div style="position:relative;padding-top:18px;animation:pf4 4.6s ease-in-out infinite 0.8s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#00aa44;border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#fffb8c;border:1px solid #d4c400;padding:20px 18px 24px;box-shadow:5px 5px 16px rgba(0,0,0,0.5);transform:rotate(3deg);position:relative;">
+          <div style="font-family:'Bangers',cursive;font-size:0.65rem;letter-spacing:3px;color:#888;margin-bottom:6px;border-bottom:1px dashed #ccc;padding-bottom:4px;">EXHIBIT D // SUPPLY INTEL</div>
+          <div class="font-bangers" style="font-size:1.5rem;color:#1a1008;letter-spacing:2px;line-height:1.1;">TOTAL SUPPLY</div>
+          <div class="font-bangers" style="font-size:2.4rem;color:var(--red);letter-spacing:1px;line-height:1.1;word-break:break-all;">1,000,000,000</div>
+          <div class="font-marker" style="font-size:0.82rem;color:#444;margin-top:8px;line-height:1.7;">one billion trolls.<br>all in the wild.<br>none in dev wallet.</div>
+          <div style="margin-top:10px;font-family:'Bangers',cursive;font-size:0.72rem;color:var(--red);border-top:1px dashed #bba;padding-top:6px;">"COUNTED BY HAND.<br>BABYTROLL MISCOUNTED TWICE."</div>
+          <div style="position:absolute;bottom:10px;right:8px;border:3px solid rgba(0,140,50,0.65);color:rgba(0,140,50,0.65);font-family:'Bangers',cursive;font-size:0.75rem;padding:2px 8px;letter-spacing:2px;transform:rotate(-10deg);">CONFIRMED</div>
+        </div>
+      </div>
+
+      <!-- CARD 5: GOOD DISTRIBUTION -->
+      <div style="position:relative;padding-top:18px;animation:pf5 5.4s ease-in-out infinite 0.2s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--red);border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#fff;border:2px solid #ddd;border-left:6px solid #1144cc;padding:18px 16px 18px 22px;box-shadow:5px 5px 10px rgba(0,0,0,0.35);background-image:repeating-linear-gradient(0deg,transparent,transparent 24px,#cce0ff 24px,#cce0ff 25px);transform:rotate(-2.5deg);position:relative;">
+          <div style="font-family:'Bangers',cursive;font-size:0.7rem;letter-spacing:2px;color:var(--ink);margin-bottom:8px;">DISTRIBUTION REPORT:</div>
+          <div class="font-bangers" style="font-size:1.9rem;color:#1144cc;letter-spacing:1px;line-height:1.1;">FAIR &amp;<br>SQUARE</div>
+          <div style="font-size:0.84rem;line-height:2.1;margin-top:10px;color:#333;font-family:'Special Elite',cursive;">
+            &#9679; Public: 100%<br>
+            &#9679; Dev wallet: 0%<br>
+            &#9679; Team tokens: lol no<br>
+            &#9679; VCs: blocked at door
+          </div>
+          <div class="font-marker" style="font-size:0.72rem;color:var(--red);margin-top:8px;border-top:1px dashed #bbb;padding-top:6px;">"DEV BOUGHT SAME AS YOU.<br>WE'RE ALL NGMI TOGETHER."</div>
+        </div>
+      </div>
+
+      <!-- CARD 6: COMMUNITY DRIVEN -->
+      <div style="position:relative;padding-top:18px;animation:pf6 4s ease-in-out infinite 1s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--yellow);border:2px solid rgba(0,0,0,0.4);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+        <div style="background:#1a1008;border:4px solid var(--yellow);padding:20px 18px;box-shadow:6px 6px 0 var(--yellow);transform:rotate(1.5deg);position:relative;">
+          <div style="text-align:center;border-bottom:2px solid var(--yellow);padding-bottom:10px;margin-bottom:12px;">
+            <div class="font-bangers" style="color:var(--yellow);font-size:2rem;letter-spacing:3px;line-height:1.1;">COMMUNITY<br>DRIVEN</div>
+          </div>
+          <div class="font-marker" style="color:rgba(245,240,232,0.9);font-size:0.88rem;line-height:1.8;text-align:center;">
+            the trolls decide.<br>the degens rule.<br>adults left the chat in 2019.
+          </div>
+          <div style="text-align:center;margin-top:12px;font-family:'Bangers',cursive;color:rgba(255,214,0,0.7);font-size:0.75rem;letter-spacing:1px;">"COMMUNITY RUN BECAUSE<br>THE DEVS SAID YOLO"</div>
+          <div style="position:absolute;bottom:8px;right:8px;border:3px solid rgba(255,214,0,0.5);color:rgba(255,214,0,0.5);font-family:'Bangers',cursive;font-size:0.7rem;padding:2px 8px;letter-spacing:2px;transform:rotate(-6deg);">POWER TO DEGENS</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CA STRIP -->
+    <div style="position:relative;padding-top:18px;margin-top:8px;">
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--red);border:2px solid rgba(255,255,255,0.6);box-shadow:0 2px 6px rgba(0,0,0,0.7);z-index:5;"></div>
+      <div style="background:#f4f0e0;border:2px solid #9a8a5a;padding:18px 22px;box-shadow:5px 5px 0 rgba(0,0,0,0.5);transform:rotate(-0.5deg);background-image:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(100,80,40,0.07) 22px,rgba(100,80,40,0.07) 23px);position:relative;">
+        <div style="background:#1a1008;color:var(--yellow);font-family:'Bangers',cursive;font-size:0.85rem;letter-spacing:3px;text-align:center;padding:4px 10px;margin:-18px -22px 14px -22px;">SPRAY PAINTED ON THE BLOCKCHAIN // PASTE INTO RAYDIUM</div>
+        <div class="font-bangers" style="font-size:clamp(0.6rem,1.8vw,1rem);letter-spacing:2px;color:var(--red);word-break:break-all;text-align:center;">6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump</div>
+        <div style="text-align:center;margin-top:12px;">
+          <button class="btn-meme copy-btn" onclick="copyCA(this)" style="font-size:1rem;padding:8px 24px;">COPY CA</button>
+        </div>
+        <div class="font-marker" style="position:absolute;bottom:6px;right:12px;font-size:0.65rem;color:var(--blue);transform:rotate(-2deg);">babytroll wuz here</div>
+        <div class="font-marker" style="position:absolute;top:26px;left:10px;font-size:0.65rem;color:var(--green);transform:rotate(2deg);">&#8805;) &#8805;) &#8805;)</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== CHART ==================== -->
+<section class="relative py-16 px-4 overflow-hidden" style="background:#0d0905;" id="chart">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-8" data-aos="zoom-in">
+      <div class="section-stamp" style="color:var(--green);border-color:var(--green);">MISSION CONTROL</div>
+      <div class="font-bangers mt-2" style="font-size:1.1rem;letter-spacing:3px;color:rgba(255,255,255,0.5);">THE TRADING WAR ROOM — INTERNET BUNKER LEVEL</div>
+    </div>
+
+    <!-- FAKE TRADER REACTIONS -->
+    <div class="flex flex-wrap gap-3 justify-center mb-6">
+      <div style="background:#1a3a1a;border:2px solid var(--green);padding:6px 14px;font-family:'Bangers',cursive;font-size:1rem;color:var(--green);letter-spacing:1px;animation:boing 2s infinite;">
+        TRADER: "I AM NEVER SELLING"
+      </div>
+      <div class="live-badge" style="background:#0044aa;">RAYDIUM VERIFIED</div>
+      <div style="background:#3a1a1a;border:2px solid var(--red);padding:6px 14px;font-family:'Bangers',cursive;font-size:1rem;color:var(--red);letter-spacing:1px;animation:shake 3s infinite;">
+        FUD DETECTED // IGNORED
+      </div>
+    </div>
+
+    <!-- DEXSCREENER EMBED -->
+    <div style="position:relative;">
+      <div style="position:absolute;top:-14px;left:20px;z-index:10;" class="live-badge">🔴 LIVE CHART</div>
+      <iframe id="dexscreener-embed"
+        src="https://dexscreener.com/solana/34utpx3zyyfc5gvqdxwjqlf77bu5ebb6o3c2xynpktzl?embed=1&theme=dark&trades=1"
+        allow="clipboard-write"
+        style="border-radius:0;"
+      ></iframe>
+    </div>
+
+    <!-- MOVING TICKERS -->
+    <div class="ticker-wrap mt-6" style="background:var(--green);border-color:var(--ink);">
+      <span class="ticker-content" style="color:var(--ink);">
+        CHART IS LIVE &nbsp;&nbsp; BUY THE DIP &nbsp;&nbsp; NEVER SELL &nbsp;&nbsp; 1000X INCOMING &nbsp;&nbsp;
+        BABYTROLL &nbsp;&nbsp; SOLANA SPEED &nbsp;&nbsp; BASED AND TROLLPILLED &nbsp;&nbsp;
+        WE ARE ALL GONNA MAKE IT &nbsp;&nbsp; EXCEPT THE PAPERHAND &nbsp;&nbsp; CHART IS LIVE &nbsp;&nbsp;
+      </span>
+    </div>
+
+    <div class="text-center mt-6">
+      <a href="https://dexscreener.com/solana/34utpx3zyyfc5gvqdxwjqlf77bu5ebb6o3c2xynpktzl" target="_blank" class="btn-meme green" style="font-size:1.3rem;">OPEN FULL CHART</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ROADMAP ==================== -->
+<style>
+#roadmap { background: #0f0b06; }
+
+/* Phase card styles — each completely different */
+.phase-wrap {
+  position: relative;
+  transition: transform 0.2s;
+}
+.phase-wrap:hover { z-index: 20; }
+
+@keyframes flashWarning {
+  0%,100%{opacity:1;background:var(--red)}
+  50%{opacity:0.5;background:#880000}
+}
+@keyframes pfr1 { 0%,100%{transform:rotate(-2.5deg) translateY(0)} 55%{transform:rotate(-2deg) translateY(-7px)} }
+@keyframes pfr2 { 0%,100%{transform:rotate(1.5deg) translateY(0)} 55%{transform:rotate(2deg) translateY(-9px)} }
+@keyframes pfr3 { 0%,100%{transform:rotate(3.5deg) translateY(0)} 55%{transform:rotate(4deg) translateY(-6px)} }
+
+.pfr1 { animation: pfr1 4.5s ease-in-out infinite; }
+.pfr2 { animation: pfr2 5.2s ease-in-out infinite 0.5s; }
+.pfr3 { animation: pfr3 3.9s ease-in-out infinite 1s; }
+
+/* Phase 1 — aged parchment with torn bottom */
+.phase1-doc {
+  background: #f6efd4;
+  border: 2px solid #b8986a;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.55);
+  background-image: repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(120,90,40,0.07) 28px,rgba(120,90,40,0.07) 29px);
+  clip-path: polygon(0 0, 100% 0, 100% 94%, 97% 100%, 93% 95%, 89% 100%, 85% 95%, 81% 100%, 76% 95%, 70% 100%, 64% 95%, 58% 100%, 52% 94%, 46% 100%, 40% 95%, 34% 100%, 28% 95%, 22% 100%, 16% 95%, 10% 100%, 5% 95%, 0 100%);
+  padding: 22px 18px 32px;
+}
+
+/* Phase 2 — dark red classified file folder */
+.phase2-doc {
+  background: #160000;
+  border: 3px solid #cc1111;
+  box-shadow: 0 0 22px rgba(204,17,17,0.3), 6px 6px 0 rgba(0,0,0,0.5);
+  padding: 0;
+  overflow: hidden;
+}
+.phase2-doc-tab {
+  background: var(--red);
+  padding: 7px 14px;
+  border-bottom: 2px solid #880000;
+}
+.phase2-doc-body {
+  padding: 16px;
+}
+
+/* Phase 3 — whiteboard / blueprint */
+.phase3-doc {
+  background: #f0f0ec;
+  border: 5px solid #222;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.65);
+  padding: 18px 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Ccircle cx='15' cy='15' r='0.5' fill='%23aaa' opacity='0.4'/%3E%3C/svg%3E");
+}
+
+/* Phase label badges */
+.phase-num {
+  display: inline-block;
+  font-family: 'Bangers', cursive;
+  letter-spacing: 2px;
+  font-size: 0.75rem;
+  padding: 1px 10px;
+  margin-bottom: 8px;
+}
+
+/* Item list row */
+.phase-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.85rem;
+  line-height: 1.85;
+}
+.phase-item-done { text-decoration: line-through; opacity: 0.5; }
+.phase-bullet {
+  font-family: 'Bangers', cursive;
+  color: var(--red);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* Connecting string between phases */
+.road-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+.road-connector svg {
+  width: 100%;
+  height: 40px;
+}
+
+/* Pin dot */
+.pin-dot {
+  position: absolute;
+  top: -10px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.5);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.25);
+  z-index: 5;
+}
+
+/* Forum snippet */
+.mini-forum {
+  background: #ddd;
+  border: 1px solid #aaa;
+  font-family: 'Special Elite', cursive;
+  font-size: 0.7rem;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.mini-forum-bar {
+  background: #4040a0;
+  color: #fff;
+  font-family: 'Bangers', cursive;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+}
+
+/* Phase connectors — desktop horizontal arrows between phases */
+@media(min-width:768px){
+  .road-connector { display:flex; }
+}
+@media(max-width:767px){
+  .road-connector { display:none; }
+}
+</style>
+
+<section class="road-section relative py-20 px-4 overflow-hidden" id="roadmap">
+
+  <!-- subtle grid bg -->
+  <div style="position:absolute;inset:0;pointer-events:none;opacity:0.03;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22none%22 stroke=%22white%22 stroke-width=%221%22/%3E%3C/svg%3E');"></div>
+
+  <div class="max-w-6xl mx-auto" style="position:relative;z-index:2;">
+
+    <!-- HEADER -->
+    <div class="text-center mb-14">
+      <div style="display:inline-block;position:relative;margin-bottom:8px;">
+        <div class="font-bangers" style="font-size:clamp(2.5rem,8vw,5rem);letter-spacing:6px;color:#fff;text-shadow:3px 3px 0 var(--red);">THE ROADMAP</div>
+        <div style="position:absolute;inset:-6px -14px;border:3px solid var(--red);border-radius:38%;transform:rotate(-1.5deg);pointer-events:none;animation:boing 3s ease-in-out infinite;"></div>
+      </div>
+      <div style="display:block;margin-top:14px;">
+        <span class="font-marker" style="color:rgba(255,255,255,0.45);font-size:0.95rem;">a.k.a. THE INTERNET PROPHECY. a.k.a. THE MASTER PLAN.</span>
+      </div>
+      <div style="display:inline-block;margin-top:10px;background:var(--red);color:#fff;font-family:'Bangers',cursive;font-size:0.85rem;letter-spacing:4px;padding:4px 18px;border:2px solid rgba(255,255,255,0.3);animation:flashWarning 1.6s infinite;">
+        DO NOT SHARE WITH AUTHORITIES
+      </div>
+    </div>
+
+    <!-- THREE PHASES -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:48px 28px;align-items:start;">
+
+      <!-- PHASE 1 — pergaminho velho -->
+      <div style="position:relative;padding-top:18px;animation:pfr1 4.5s ease-in-out infinite;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#cc8800;border:2px solid rgba(255,255,255,0.5);box-shadow:0 2px 6px rgba(0,0,0,0.6);z-index:5;"></div>
+        <div style="background:#f6efd4;border:2px solid #b8986a;box-shadow:6px 6px 0 rgba(0,0,0,0.55);background-image:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(120,90,40,0.07) 28px,rgba(120,90,40,0.07) 29px);clip-path:polygon(0 0,100% 0,100% 94%,97% 100%,93% 95%,89% 100%,85% 95%,81% 100%,76% 95%,70% 100%,64% 95%,58% 100%,52% 94%,46% 100%,40% 95%,34% 100%,28% 95%,22% 100%,16% 95%,10% 100%,5% 95%,0 100%);padding:22px 18px 36px;position:relative;">
+
+          <div style="display:inline-block;background:#1a1008;color:var(--yellow);font-family:'Bangers',cursive;letter-spacing:2px;font-size:0.75rem;padding:2px 10px;margin-bottom:10px;">PHASE 01 &#10003; DONE (we think)</div>
+
+          <div class="font-bangers" style="font-size:2.2rem;color:#4a2a08;letter-spacing:2px;line-height:1.1;margin-bottom:8px;">BORN.<br>ESCAPED.<br>INVADED.</div>
+
+          <svg width="100%" height="6" viewBox="0 0 200 6"><path d="M0 4 C40 1,90 5,140 3 C170 2,190 5,200 4" stroke="#b8986a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+
+          <div style="margin-top:12px;font-family:'Special Elite',cursive;font-size:0.88rem;">
+            <div style="display:flex;gap:8px;line-height:2;text-decoration:line-through;opacity:0.5;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Got banned from daycare</div>
+            <div style="display:flex;gap:8px;line-height:2;text-decoration:line-through;opacity:0.5;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Discovered the internet</div>
+            <div style="display:flex;gap:8px;line-height:2;text-decoration:line-through;opacity:0.5;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Deployed on Solana (oops)</div>
+            <div style="display:flex;gap:8px;line-height:2;text-decoration:line-through;opacity:0.5;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> LP burned (no take-backsies)</div>
+            <div style="display:flex;gap:8px;line-height:2;text-decoration:line-through;opacity:0.5;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> First 1000 holders traumatized</div>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--red);margin-top:14px;border-top:1px dashed #b8986a;padding-top:8px;">&#8592; completed while napping</div>
+
+          <div style="position:absolute;bottom:40px;right:10px;border:3px solid rgba(0,140,50,0.6);color:rgba(0,140,50,0.6);font-family:'Bangers',cursive;font-size:0.72rem;padding:2px 8px;letter-spacing:3px;transform:rotate(-11deg);">DONE &#10003;</div>
+        </div>
+      </div>
+
+      <!-- PHASE 2 — pasta classificada vermelha -->
+      <div style="position:relative;padding-top:18px;margin-top:16px;animation:pfr2 5.2s ease-in-out infinite 0.5s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:var(--red);border:2px solid rgba(255,255,255,0.5);box-shadow:0 0 10px rgba(204,17,17,0.9);z-index:5;"></div>
+        <div style="background:#160000;border:3px solid #cc1111;box-shadow:0 0 22px rgba(204,17,17,0.3),6px 6px 0 rgba(0,0,0,0.5);overflow:hidden;">
+
+          <div style="background:var(--red);padding:8px 16px;border-bottom:2px solid #880000;display:flex;justify-content:space-between;align-items:center;">
+            <span class="font-bangers" style="color:#fff;font-size:0.8rem;letter-spacing:3px;">PHASE 02 // HAPPENING NOW</span>
+            <div class="live-badge" style="font-size:0.6rem;padding:2px 6px;"><div class="live-dot"></div>ACTIVE</div>
+          </div>
+
+          <div style="padding:18px;">
+            <div class="font-bangers" style="font-size:2.2rem;color:var(--red);letter-spacing:2px;line-height:1;margin-bottom:10px;text-shadow:0 0 12px rgba(255,0,0,0.25);">INTERNET<br>INFECTION</div>
+
+            <div style="font-family:'Special Elite',cursive;font-size:0.88rem;line-height:2;color:rgba(245,240,232,0.9);">
+              <div style="display:flex;gap:8px;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Spam every Twitter reply</div>
+              <div style="display:flex;gap:8px;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Make influencers nervous</div>
+              <div style="display:flex;gap:8px;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Reach 10,000 holders</div>
+              <div style="display:flex;gap:8px;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> Trend on CT for 15 mins</div>
+              <div style="display:flex;gap:8px;"><span style="color:var(--red);font-family:'Bangers',cursive;">&#8594;</span> CEX "probably not" listing</div>
+            </div>
+
+            <div style="background:#ddd;border:1px solid #aaa;font-family:'Special Elite',cursive;font-size:0.72rem;margin-top:12px;overflow:hidden;">
+              <div style="background:#4040a0;color:#fff;font-family:'Bangers',cursive;font-size:0.65rem;letter-spacing:1px;padding:3px 8px;">4chan /biz/ — anonymous poster</div>
+              <div style="padding:6px 10px;color:#333;line-height:1.6;">"babytroll in my portfolio again<br>i said i wouldn't<br>i lied"</div>
+            </div>
+
+            <div style="text-align:right;margin-top:10px;">
+              <span style="border:3px solid rgba(204,17,17,0.65);color:rgba(204,17,17,0.65);font-family:'Bangers',cursive;font-size:0.85rem;padding:2px 10px;letter-spacing:3px;display:inline-block;">SEND IT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHASE 3 — quadro branco / blueprint -->
+      <div style="position:relative;padding-top:18px;margin-top:8px;animation:pfr3 3.9s ease-in-out infinite 1s;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#1144cc;border:2px solid rgba(255,255,255,0.5);box-shadow:0 2px 6px rgba(0,0,0,0.6);z-index:5;"></div>
+        <div style="background:#f0f0ec;border:5px solid #222;box-shadow:8px 8px 0 rgba(0,0,0,0.65);padding:20px 18px;position:relative;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2230%22 height=%2230%22%3E%3Ccircle cx=%2215%22 cy=%2215%22 r=%220.5%22 fill=%22%23aaa%22 opacity=%220.4%22/%3E%3C/svg%3E');">
+
+          <div style="display:inline-block;background:#1144cc;color:#fff;font-family:'Bangers',cursive;letter-spacing:2px;font-size:0.75rem;padding:2px 10px;margin-bottom:10px;">PHASE 03 // PROPHECY</div>
+
+          <div class="font-bangers" style="font-size:2.2rem;color:#1a1008;letter-spacing:1px;line-height:1.1;margin-bottom:6px;">FULL<br>TROLL<br>ASCENSION</div>
+
+          <div style="height:3px;background:#1a1008;margin-bottom:12px;transform:rotate(-0.5deg);"></div>
+
+          <div style="font-family:'Special Elite',cursive;font-size:0.88rem;line-height:2;color:#1a1008;">
+            <div style="display:flex;gap:8px;"><span style="color:#1144cc;font-family:'Bangers',cursive;">&#10022;</span> Replace doge as king meme</div>
+            <div style="display:flex;gap:8px;"><span style="color:#1144cc;font-family:'Bangers',cursive;">&#10022;</span> CNBC says "what is babytroll"</div>
+            <div style="display:flex;gap:8px;"><span style="color:#1144cc;font-family:'Bangers',cursive;">&#10022;</span> Mom texts about the coin</div>
+            <div style="display:flex;gap:8px;"><span style="color:#1144cc;font-family:'Bangers',cursive;">&#10022;</span> Elon posts the face &#8805;)</div>
+            <div style="display:flex;gap:8px;"><span style="color:#1144cc;font-family:'Bangers',cursive;">&#10022;</span> We all retire. Or not. YOLO.</div>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--red);margin-top:14px;border-top:2px solid #1a1008;padding-top:8px;">
+            THIS IS NOT A ROADMAP.<br>IT'S A THREAT.
+          </div>
+
+          <div style="position:absolute;bottom:-12px;right:-8px;background:#ffecec;border:2px solid var(--red);padding:5px 9px;font-family:'Permanent Marker',cursive;font-size:0.62rem;box-shadow:2px 2px 6px rgba(0,0,0,0.2);transform:rotate(5deg);max-width:100px;">trust the baby.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM QUOTE -->
+    <div class="mt-16 relative">
+      <div style="max-width:600px;margin:0 auto;background:var(--ink);border:4px solid var(--yellow);padding:20px 28px;box-shadow:6px 6px 0 var(--yellow);transform:rotate(-0.8deg);position:relative;">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--yellow);color:var(--ink);font-family:'Bangers',cursive;font-size:0.78rem;letter-spacing:3px;padding:2px 16px;border:2px solid var(--ink);white-space:nowrap;">LEAKED FROM BABYTROLL'S DIARY</div>
+        <div class="font-bangers" style="font-size:1.2rem;color:var(--yellow);letter-spacing:2px;line-height:1.7;text-align:center;">
+          "THE BABY OPERATES ON VIBE-BASED TIMELINES.<br>ALL PHASES MAY HAPPEN SIMULTANEOUSLY.<br>OR NEVER. OR HE ALREADY DID THEM ALL.<br>HE DOESN'T OWE YOU A TIMELINE. HE'S A BABY."
+        </div>
+      </div>
+
+      <div style="position:absolute;right:2%;top:-6px;transform:rotate(7deg);" class="hidden lg:block">
+        <div style="background:#fffb8c;border:1px solid #ccc;padding:7px 10px;font-family:'Permanent Marker',cursive;font-size:0.72rem;box-shadow:2px 2px 8px rgba(0,0,0,0.25);max-width:140px;">he already did phase 3.<br>we just don't know it.</div>
+      </div>
+      <div style="position:absolute;left:2%;top:4px;transform:rotate(-5deg);" class="hidden lg:block">
+        <div style="background:#ffecec;border:2px solid var(--red);padding:6px 10px;font-family:'Permanent Marker',cursive;font-size:0.72rem;box-shadow:2px 2px 6px rgba(0,0,0,0.2);max-width:120px;">source:<br>trust me bro</div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ==================== HOW TO BUY ==================== -->
+<style>
+/* HOW TO BUY — cursed 2011 internet tutorial */
+#howtobuy {
+  background: #e8e0cc;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p2'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04' numOctaves='5' seed='8' stitchTiles='stitch'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='2'/%3E%3C/filter%3E%3Crect width='200' height='200' fill='%23e8e0cc' filter='url(%23p2)' opacity='0.3'/%3E%3C/svg%3E");
+}
+/* Fake browser window */
+.fake-browser {
+  border: 3px solid #999;
+  border-radius: 6px 6px 0 0;
+  overflow:hidden;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.25);
+}
+.fake-browser-bar {
+  background: linear-gradient(to bottom, #ddd, #bbb);
+  padding: 5px 8px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  border-bottom:2px solid #999;
+}
+.browser-dot {
+  width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,0.3);
+}
+.fake-browser-url {
+  background:#fff;
+  border:1px solid #999;
+  border-radius:3px;
+  font-family:'Special Elite',cursive;
+  font-size:0.65rem;
+  padding:1px 8px;
+  flex:1;
+  color:#333;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.fake-browser-body {
+  background:#fff;
+  padding:12px;
+}
+/* Step panel — MS Paint style */
+.htb-step {
+  background:#fff;
+  border:3px solid #1a1008;
+  position:relative;
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.htb-step:hover {
+  transform:translateY(-4px) rotate(0.5deg) !important;
+  box-shadow:10px 10px 0 var(--ink) !important;
+  z-index:20;
+}
+/* Step number badge — MSPaint circle style */
+.htb-num {
+  position:absolute;
+  top:-16px;left:-16px;
+  width:44px;height:44px;
+  background:var(--red);
+  border:4px solid var(--ink);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bangers',cursive;
+  font-size:1.5rem;
+  color:#fff;
+  box-shadow:3px 3px 0 var(--ink);
+  z-index:10;
+}
+/* Fake popup window -->
+.fake-popup {
+  background:#c8c8ff;
+  border:3px solid #000080;
+  font-family:'Special Elite',cursive;
+  font-size:0.75rem;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
+  position:absolute;
+  z-index:30;
+}
+.fake-popup-bar {
+  background: linear-gradient(to right, #000080, #0040ff);
+  color:#fff;
+  font-family:'Bangers',cursive;
+  letter-spacing:1px;
+  padding:2px 8px;
+  font-size:0.75rem;
+  display:flex;justify-content:space-between;align-items:center;
+}
+/* Big red MS Paint arrow */
+.mspaint-arrow {
+  color:var(--red);
+  font-family:'Bangers',cursive;
+  font-size:3rem;
+  text-shadow:3px 3px 0 rgba(0,0,0,0.3);
+  display:inline-block;
+  animation:arrowPulse 0.7s infinite alternate;
+  line-height:1;
+}
+/* Loading bar */
+.fake-loading {
+  background:#c8c8c8;
+  border:2px solid #888;
+  height:18px;
+  position:relative;
+  overflow:hidden;
+}
+.fake-loading-bar {
+  background:linear-gradient(to right,#0000aa,#0000ff);
+  height:100%;
+  animation:loadingAnim 3s ease-in-out infinite;
+}
+@keyframes loadingAnim { 0%{width:0%} 50%{width:80%} 80%{width:95%} 100%{width:100%} }
+/* Rage face (text art) */
+.rage-face {
+  font-family:'Bangers',cursive;
+  color:var(--red);
+  font-size:1.1rem;
+  line-height:1;
+  letter-spacing:1px;
+}
+/* Fake success popup -->
+.success-popup {
+  background:#c8ffc8;
+  border:3px solid #006600;
+  padding:10px 14px;
+  font-family:'Bangers',cursive;
+  font-size:1.2rem;
+  color:#004400;
+  letter-spacing:2px;
+  box-shadow:4px 4px 0 rgba(0,100,0,0.4);
+  display:inline-block;
+  animation:boing 2s ease-in-out infinite;
+}
+/* Handwritten circles around steps -->
+@keyframes circleGrow { 0%{stroke-dashoffset:400} 100%{stroke-dashoffset:0} }
+</style>
+
+<section class="relative py-16 px-4 overflow-hidden" style="background:#e8e0cc;" id="howtobuy">
+
+  <!-- Lined paper background -->
+  <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(150,180,255,0.15) 27px,rgba(150,180,255,0.15) 28px);pointer-events:none;"></div>
+  <div style="position:absolute;top:0;bottom:0;left:80px;width:3px;background:rgba(255,150,150,0.3);pointer-events:none;"></div>
+
+  <div class="max-w-5xl mx-auto relative" style="z-index:5;">
+
+    <!-- SECTION HEADER — forum thread style -->
+    <div class="mb-8 relative" data-aos="fade-down">
+
+      <!-- Fake browser window around header -->
+      <div class="fake-browser" style="max-width:600px;margin:0 auto;">
+        <div class="fake-browser-bar">
+          <div class="browser-dot" style="background:#ff5f57;"></div>
+          <div class="browser-dot" style="background:#ffbd2e;"></div>
+          <div class="browser-dot" style="background:#28ca41;"></div>
+          <div class="fake-browser-url">http://how2buy.babytroll.lol/tutorial_v3_FINAL_REAL.html</div>
+          <div style="font-family:'Bangers',cursive;font-size:0.65rem;color:#555;margin-left:4px;">GO</div>
+        </div>
+        <div class="fake-browser-body" style="padding:16px 20px;">
+          <div class="font-bangers" style="font-size:clamp(1.8rem,6vw,3.2rem);letter-spacing:3px;color:var(--ink);text-align:center;">HOW 2 BUY BABYTROLL</div>
+          <div style="text-align:center;font-family:'Special Elite',cursive;font-size:0.8rem;color:#666;margin-top:4px;">
+            A COMPLETE IDIOT'S GUIDE &nbsp;|&nbsp; posted by: anonymous_degen &nbsp;|&nbsp; 4:17 AM &nbsp;|&nbsp; 69 views
+          </div>
+          <!-- Fake loading bar -->
+          <div style="margin:8px 0 4px;">
+            <div style="font-family:'Bangers',cursive;font-size:0.65rem;color:#555;letter-spacing:1px;margin-bottom:2px;">PAGE LOADING:</div>
+            <div class="fake-loading"><div class="fake-loading-bar"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning tape across -->
+      <div class="warning" style="display:block;text-align:center;margin-top:8px;font-size:0.85rem;letter-spacing:3px;transform:rotate(-1deg);">
+        WARNING: FOLLOWING THIS GUIDE MAY RESULT IN BECOMING TERMINALLY ONLINE
+      </div>
+    </div>
+
+    <!-- THE 6 STEPS — staggered layout like old image memes -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 mt-4">
+
+      <!-- STEP 1 — Phantom -->
+      <div data-aos="fade-up" data-aos-delay="80" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--ink);transform:rotate(-2deg);">
+          <div class="htb-num">1</div>
+          <div class="font-bangers" style="font-size:1.4rem;letter-spacing:2px;color:var(--ink);margin-top:6px;">GET PHANTOM WALLET</div>
+
+          <!-- Fake browser screenshot area -->
+          <div style="background:#f0f0f0;border:2px solid #aaa;margin:8px 0;padding:8px;font-family:'Special Elite',cursive;font-size:0.72rem;color:#333;position:relative;">
+            <div style="background:#ddd;border:1px solid #bbb;height:16px;margin-bottom:6px;display:flex;align-items:center;padding:0 4px;font-size:0.6rem;color:#555;">phantom.app — SECURE</div>
+            <div style="color:#0000cc;text-decoration:underline;">Download Phantom for Chrome</div>
+            <div style="color:#666;font-size:0.65rem;margin-top:2px;">FREE. SAFE. NOT A VIRUS PROBABLY.</div>
+            <!-- MS Paint red circle -->
+            <svg style="position:absolute;inset:0;width:100%;height:100%;" viewBox="0 0 200 60" preserveAspectRatio="none">
+              <ellipse cx="100" cy="42" rx="80" ry="15" fill="none" stroke="#cc1111" stroke-width="3" stroke-dasharray="400" stroke-dashoffset="0"/>
+            </svg>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--gray);">install it. it free.<br>click the ghost. trust me.</div>
+
+          <!-- Big arrow pointing to next -->
+          <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);z-index:15;" class="hidden lg:block">
+            <div class="mspaint-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 — Buy SOL -->
+      <div data-aos="fade-up" data-aos-delay="140" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--ink);transform:rotate(2deg);">
+          <div class="htb-num" style="background:var(--blue);">2</div>
+          <div class="font-bangers" style="font-size:1.4rem;letter-spacing:2px;color:var(--ink);margin-top:6px;">BUY SOME SOL</div>
+
+          <div style="background:#fffff0;border:2px solid #ccc;margin:8px 0;padding:8px;font-family:'Special Elite',cursive;font-size:0.72rem;position:relative;">
+            <div style="font-family:'Bangers',cursive;font-size:0.8rem;color:#0000aa;margin-bottom:4px;">COINBASE.COM</div>
+            <div style="color:#333;line-height:1.5;">BUY SOL<br>you need gas money to<br>do things on chain bro</div>
+            <!-- Red arrow drawn on screenshot -->
+            <div style="position:absolute;top:8px;right:8px;color:var(--red);font-family:'Bangers',cursive;font-size:1.5rem;transform:rotate(30deg);">→</div>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--gray);">doesn't matter how much.<br>all of it. put in all of it.</div>
+
+          <!-- Popup sticking out -->
+          <div class="fake-popup" style="top:-40px;right:-10px;width:130px;">
+            <div class="fake-popup-bar">Tip <span>✕</span></div>
+            <div style="padding:4px 6px;color:#000080;font-size:0.65rem;line-height:1.4;">buy more SOL than u think u need. TRUST.</div>
+          </div>
+
+          <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);z-index:15;" class="hidden lg:block">
+            <div class="mspaint-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 — Raydium -->
+      <div data-aos="fade-up" data-aos-delay="200" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--ink);transform:rotate(-1deg);">
+          <div class="htb-num" style="background:var(--green);">3</div>
+          <div class="font-bangers" style="font-size:1.4rem;letter-spacing:2px;color:var(--ink);margin-top:6px;">OPEN RAYDIUM</div>
+
+          <!-- Fake Raydium screenshot -->
+          <div class="fake-browser" style="margin:8px 0;">
+            <div class="fake-browser-bar" style="background:linear-gradient(to bottom,#2a2a3a,#1a1a2a);padding:4px 6px;">
+              <div class="browser-dot" style="background:#ff5f57;"></div>
+              <div class="browser-dot" style="background:#ffbd2e;"></div>
+              <div class="fake-browser-url" style="background:#2a2a3a;color:#88ff88;border-color:#444;">raydium.io/swap</div>
+            </div>
+            <div style="background:#0d0d1a;padding:8px;font-family:'Bangers',cursive;font-size:0.75rem;color:#88ff88;letter-spacing:1px;position:relative;">
+              RAYDIUM SWAP<br>
+              <div style="color:#555;font-size:0.6rem;font-family:'Special Elite',cursive;margin-top:2px;">Connect Wallet → Paste CA → SWAP</div>
+              <!-- Giant red arrow drawn on it -->
+              <div style="position:absolute;bottom:2px;right:4px;color:var(--red);font-family:'Bangers',cursive;font-size:2rem;line-height:1;">↙</div>
+            </div>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--gray);">go to raydium.io<br>click connect wallet<br>approve everything</div>
+        </div>
+      </div>
+
+      <!-- STEP 4 — Paste CA -->
+      <div data-aos="fade-up" data-aos-delay="260" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--red);border-color:var(--red);transform:rotate(3deg);">
+          <div class="htb-num" style="background:#cc8800;border-color:var(--red);">4</div>
+          <div class="font-bangers" style="font-size:1.4rem;letter-spacing:2px;color:var(--red);margin-top:6px;">PASTE CONTRACT</div>
+
+          <div style="background:var(--ink);border:2px solid var(--yellow);padding:8px;margin:8px 0;font-family:'Special Elite',cursive;font-size:0.6rem;color:var(--yellow);word-break:break-all;letter-spacing:1px;position:relative;">
+            6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump
+            <div style="position:absolute;top:-10px;right:4px;background:var(--red);color:#fff;font-family:'Bangers',cursive;font-size:0.6rem;padding:1px 4px;letter-spacing:1px;">COPY THIS</div>
+          </div>
+
+          <div style="text-align:center;margin-bottom:6px;">
+            <button class="btn-meme copy-btn" onclick="copyCA(this)" style="font-size:0.8rem;padding:6px 14px;background:var(--red);color:#fff;">COPY CA</button>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--red);">ctrl+c ctrl+v<br>this is not optional.</div>
+
+          <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);z-index:15;" class="hidden lg:block">
+            <div class="mspaint-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 5 — Swap -->
+      <div data-aos="fade-up" data-aos-delay="320" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--green);border-color:var(--green);transform:rotate(-2deg);">
+          <div class="htb-num" style="background:var(--green);">5</div>
+          <div class="font-bangers" style="font-size:1.4rem;letter-spacing:1px;color:var(--green);margin-top:6px;">SWAP INTO BABYTROLL</div>
+
+          <div style="background:#e8ffe8;border:2px solid var(--green);padding:8px;margin:8px 0;font-family:'Bangers',cursive;font-size:0.85rem;color:#004400;position:relative;">
+            SET SLIPPAGE: 3-5%<br>
+            <div style="font-family:'Special Elite',cursive;font-size:0.7rem;color:#006622;margin-top:4px;">hit swap. confirm popup.<br>buy more than you planned.</div>
+            <!-- fake loading -->
+            <div style="margin-top:6px;">
+              <div style="font-family:'Special Elite',cursive;font-size:0.6rem;color:#555;margin-bottom:2px;">PROCESSING:</div>
+              <div class="fake-loading" style="height:12px;"><div class="fake-loading-bar"></div></div>
+            </div>
+          </div>
+
+          <div class="font-marker" style="font-size:0.75rem;color:var(--green);">if it fails: more slippage.<br>if it still fails: gm.</div>
+
+          <div style="position:absolute;right:-20px;top:50%;transform:translateY(-50%);z-index:15;" class="hidden lg:block">
+            <div class="mspaint-arrow">→</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 6 — Become terminally online -->
+      <div data-aos="fade-up" data-aos-delay="380" style="position:relative;">
+        <div class="htb-step" style="padding:18px 16px 14px;box-shadow:6px 6px 0 var(--ink);background:var(--ink);transform:rotate(1deg);">
+          <div class="htb-num" style="background:var(--yellow);color:var(--ink);border-color:var(--yellow);">6</div>
+          <div class="font-bangers" style="font-size:1.3rem;letter-spacing:1px;color:var(--yellow);margin-top:6px;">BECOME TERMINALLY ONLINE</div>
+
+          <div style="background:rgba(255,255,255,0.05);border:2px solid var(--yellow);padding:8px;margin:8px 0;font-family:'Permanent Marker',cursive;font-size:0.8rem;color:rgba(245,240,232,0.85);line-height:1.7;">
+            join telegram<br>
+            post babytroll everywhere<br>
+            never sell<br>
+            shill to friends and family<br>
+            ≥) PROBLEM?
+          </div>
+
+          <!-- SUCCESS window -->
+          <div style="text-align:center;margin-top:8px;">
+            <div class="success-popup">
+              TRANSACTION CONFIRMED<br>
+              <div style="font-size:0.7rem;font-family:'Special Elite',cursive;letter-spacing:1px;">YOU ARE NOW A TROLL</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM — final CA + button -->
+    <div class="text-center mt-12" data-aos="fade-up" style="position:relative;">
+      <div style="display:inline-block;position:relative;">
+
+        <!-- FAKE POPUP sticking off the buy button -->
+        <div class="fake-popup hidden md:block" style="top:-56px;right:-120px;width:150px;">
+          <div class="fake-popup-bar">System Alert <span>✕</span></div>
+          <div style="padding:5px 7px;color:#000080;font-size:0.65rem;line-height:1.4;">You are about to ape in.<br>This action cannot be undone.</div>
+          <div style="padding:0 7px 5px;display:flex;gap:6px;">
+            <div style="background:#c8c8ff;border:2px solid #0000aa;font-family:'Bangers',cursive;font-size:0.65rem;padding:1px 6px;cursor:pointer;">OK</div>
+            <div style="background:#c8c8ff;border:2px solid #0000aa;font-family:'Bangers',cursive;font-size:0.65rem;padding:1px 6px;cursor:pointer;color:#888;">cancel</div>
+          </div>
+        </div>
+
+        <div class="font-bangers" style="font-size:0.9rem;letter-spacing:2px;color:var(--gray);margin-bottom:6px;">PASTE INTO RAYDIUM:</div>
+        <div style="background:var(--ink);color:var(--yellow);font-family:'Special Elite',cursive;font-size:0.75rem;padding:10px 16px;border:3px solid var(--yellow);word-break:break-all;letter-spacing:1px;max-width:500px;margin:0 auto;">
+          6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump
+        </div>
+        <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+          <button class="btn-meme copy-btn" onclick="copyCA(this)" style="font-size:1rem;">COPY CA</button>
+          <a href="https://raydium.io/swap/?inputMint=sol&outputMint=6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump" target="_blank" class="btn-meme red" style="font-size:1.3rem;">BUY BABYTROLL NOW</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Troll reactions bottom row -->
+    <div class="flex flex-wrap gap-3 justify-center mt-10" data-aos="fade-up">
+      <div style="background:#fff;border:3px solid var(--ink);padding:6px 14px;font-family:'Special Elite',cursive;font-size:0.8rem;box-shadow:3px 3px 0 var(--ink);transform:rotate(-2deg);">
+        <span style="font-family:'Bangers',cursive;color:var(--red);">rage_buyer69:</span> bought at 3am. no ragrets.
+      </div>
+      <div style="background:#fff;border:3px solid var(--green);padding:6px 14px;font-family:'Special Elite',cursive;font-size:0.8rem;box-shadow:3px 3px 0 var(--green);transform:rotate(1.5deg);">
+        <span style="font-family:'Bangers',cursive;color:var(--green);">solana_maxi:</span> this guide changed my life. i am not ok.
+      </div>
+      <div style="background:#fff;border:3px solid var(--blue);padding:6px 14px;font-family:'Special Elite',cursive;font-size:0.8rem;box-shadow:3px 3px 0 var(--blue);transform:rotate(-1deg);">
+        <span style="font-family:'Bangers',cursive;color:var(--blue);">anon2011:</span> ≥) problem? (i bought it)
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating meme BG -->
+  <div class="absolute hidden md:block" style="top:10%;left:0%;transform:rotate(-8deg);opacity:0.55;z-index:0;">
+    <img src="meme3.png" style="width:100px;border:3px solid var(--gray);box-shadow:3px 3px 0 var(--gray);">
+  </div>
+
+</section>
+
+<!-- ==================== MEME GALLERY ==================== -->
+<section class="relative py-20 px-4 overflow-hidden" style="background:#1a1008;" id="gallery">
+  <!-- TAPE FRAME BG -->
+  <div style="position:absolute;inset:0;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2230%22 height=%2230%22%3E%3Ccircle cx=%2215%22 cy=%2215%22 r=%220.8%22 fill=%22%23ffffff08%22/%3E%3C/svg%3E');pointer-events:none;"></div>
+
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-12" data-aos="zoom-in">
+      <div class="section-stamp" style="color:var(--yellow);border-color:var(--yellow);transform:rotate(-1deg);">MEME GALLERY</div>
+      <div class="font-bangers mt-2" style="font-size:1.1rem;letter-spacing:3px;color:rgba(255,255,255,0.5);">INTERNET ARCHIVE OF CURSED ARTIFACTS</div>
+    </div>
+
+    <!-- COLLAGE GRID -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+
+      <div class="meme-card relative" data-aos="fade-up" data-aos-delay="100" style="transform:rotate(-4deg);">
+        <div style="background:#fff;border:4px solid var(--ink);padding:10px;box-shadow:6px 6px 0 var(--ink);position:relative;">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:70px;height:24px;background:rgba(255,220,100,0.8);border:1px solid rgba(180,150,50,0.5);"></div>
+          <div class="meme-img-wrap"><img src="meme1.png" style="width:100%;display:block;"></div>
+          <div class="font-marker" style="font-size:0.85rem;color:var(--ink);text-align:center;margin-top:6px;">when you buy the top</div>
+        </div>
+        <div class="sticker" style="position:absolute;bottom:-10px;right:-10px;font-size:0.65rem;transform:rotate(8deg);">RARE</div>
+      </div>
+
+      <div class="meme-card relative md:mt-8" data-aos="fade-up" data-aos-delay="150" style="transform:rotate(3deg);">
+        <div style="background:#ffecec;border:4px solid var(--red);padding:10px;box-shadow:6px 6px 0 var(--red);position:relative;">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:70px;height:24px;background:rgba(255,220,100,0.8);border:1px solid rgba(180,150,50,0.5);"></div>
+          <div class="meme-img-wrap"><img src="meme2.png" style="width:100%;display:block;"></div>
+          <div class="font-marker" style="font-size:0.85rem;color:var(--red);text-align:center;margin-top:6px;">the feeling of a 10x</div>
+        </div>
+        <div class="sticker red" style="position:absolute;top:-10px;left:-10px;font-size:0.65rem;transform:rotate(-6deg);">TOP KEK</div>
+      </div>
+
+      <div class="meme-card relative" data-aos="fade-up" data-aos-delay="200" style="transform:rotate(-2deg);">
+        <div style="background:#f0ffe0;border:4px solid var(--green);padding:10px;box-shadow:6px 6px 0 var(--green);position:relative;">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:70px;height:24px;background:rgba(255,220,100,0.8);border:1px solid rgba(180,150,50,0.5);"></div>
+          <div class="meme-img-wrap"><img src="meme3.png" style="width:100%;display:block;"></div>
+          <div class="font-marker" style="font-size:0.85rem;color:var(--green);text-align:center;margin-top:6px;">troll face: activated</div>
+        </div>
+        <div class="warning" style="position:absolute;bottom:-10px;left:-8px;font-size:0.6rem;transform:rotate(2deg);">BASED</div>
+      </div>
+
+      <div class="meme-card relative md:mt-4" data-aos="fade-up" data-aos-delay="250" style="transform:rotate(5deg);">
+        <div style="background:#e0eaff;border:4px solid var(--blue);padding:10px;box-shadow:6px 6px 0 var(--blue);position:relative;">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:70px;height:24px;background:rgba(255,220,100,0.8);border:1px solid rgba(180,150,50,0.5);"></div>
+          <div class="meme-img-wrap"><img src="meme4.png" style="width:100%;display:block;"></div>
+          <div class="font-marker" style="font-size:0.85rem;color:var(--blue);text-align:center;margin-top:6px;">ngmi vs wagmi energy</div>
+        </div>
+        <div class="sticker" style="position:absolute;top:-10px;right:-10px;font-size:0.65rem;transform:rotate(6deg);">EXHIBIT B</div>
+      </div>
+
+      <div class="meme-card relative md:col-span-2" data-aos="fade-up" data-aos-delay="300" style="transform:rotate(-1deg);">
+        <div style="background:#fffbe0;border:4px solid var(--yellow);padding:10px;box-shadow:6px 6px 0 rgba(200,160,0,0.8);position:relative;">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:70px;height:24px;background:rgba(255,220,100,0.8);border:1px solid rgba(180,150,50,0.5);"></div>
+          <div class="meme-img-wrap"><img src="meme5.png" style="width:100%;display:block;max-height:280px;object-fit:cover;"></div>
+          <div class="font-marker" style="font-size:0.9rem;color:var(--ink);text-align:center;margin-top:6px;">babytroll sees your portfolio. he is pleased.</div>
+        </div>
+        <div class="bubble" style="position:absolute;top:-50px;right:20px;transform:rotate(3deg);font-size:0.85rem;">PROBLEM?<br>≥)</div>
+        <div class="sticker red" style="position:absolute;bottom:-12px;left:20px;font-size:0.7rem;">THE MASTERPIECE</div>
+      </div>
+
+    </div>
+
+    <!-- FLOATING COMMENT -->
+    <div class="mt-10 flex flex-wrap gap-4 justify-center" data-aos="fade-up">
+      <div style="background:var(--paper);border:3px solid var(--ink);padding:8px 16px;font-family:'Special Elite',cursive;font-size:0.85rem;box-shadow:3px 3px 0 var(--ink);transform:rotate(-1deg);">
+        <span style="color:var(--red);font-family:'Bangers',cursive;">anonymous_degen:</span> this is the funniest thing on the chain rn
+      </div>
+      <div style="background:var(--paper);border:3px solid var(--ink);padding:8px 16px;font-family:'Special Elite',cursive;font-size:0.85rem;box-shadow:3px 3px 0 var(--ink);transform:rotate(2deg);">
+        <span style="color:var(--green);font-family:'Bangers',cursive;">troll_whale:</span> bought 10 SOL. sending it.
+      </div>
+      <div style="background:var(--paper);border:3px solid var(--ink);padding:8px 16px;font-family:'Special Elite',cursive;font-size:0.85rem;box-shadow:3px 3px 0 var(--ink);transform:rotate(-2deg);">
+        <span style="color:var(--blue);font-family:'Bangers',cursive;">ragecomic_revival:</span> i haven't felt like this since 2012
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FINAL SOCIALS ==================== -->
+<section class="socials-bg relative py-24 px-4 text-center overflow-hidden" id="socials">
+  <!-- DOODLE BG -->
+  <svg class="absolute inset-0 w-full h-full pointer-events-none" style="opacity:0.06;" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="15%" cy="20%" r="150" stroke="white" stroke-width="3" fill="none"/>
+    <circle cx="85%" cy="80%" r="120" stroke="white" stroke-width="2" fill="none"/>
+    <line x1="0" y1="50%" x2="100%" y2="50%" stroke="white" stroke-width="1" stroke-dasharray="20,15"/>
+    <path d="M0 30% Q25% 10%, 50% 30% T100% 30%" stroke="white" stroke-width="2" fill="none"/>
+  </svg>
+
+  <!-- FLOATING STICKER CA -->
+  <div class="absolute hidden md:block" style="top:20px;right:30px;transform:rotate(5deg);" data-aos="fade-left">
+    <div style="background:var(--yellow);border:3px solid var(--ink);padding:8px 14px;font-family:'Bangers',cursive;font-size:0.75rem;letter-spacing:1px;box-shadow:4px 4px 0 var(--ink);max-width:200px;word-break:break-all;transform:rotate(3deg);">
+      CA: 6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto relative" style="z-index:5;">
+
+    <!-- GLITCH HEADLINE -->
+    <div class="mb-4" data-aos="zoom-in">
+      <div id="heIsJustABaby" class="font-bangers" style="font-size:clamp(2.5rem,8vw,5.5rem);letter-spacing:4px;color:#fff;line-height:1;cursor:pointer;" onclick="triggerOrIsHe()">
+        HE IS JUST A BABY.
+      </div>
+      <div id="orIsHe" class="font-bangers" style="font-size:clamp(2rem,7vw,4.5rem);letter-spacing:4px;color:var(--red);opacity:0;transition:opacity 0.5s;margin-top:4px;">
+        OR IS HE?
+      </div>
+    </div>
+
+    <div class="font-elite mt-4 mb-8" style="color:rgba(245,240,232,0.7);font-size:1rem;max-width:500px;margin:0 auto 32px;">
+      The trolling has only begun. Join the community.<br>Ape in. Become legend.
+    </div>
+
+    <!-- BIG SOCIAL BUTTONS -->
+    <div class="flex flex-wrap gap-4 justify-center mb-10">
+      <a href="https://raydium.io/swap/?inputMint=sol&outputMint=6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump" target="_blank" class="btn-meme red" style="font-size:1.4rem;">BUY NOW</a>
+      <a href="https://dexscreener.com/solana/34utpx3zyyfc5gvqdxwjqlf77bu5ebb6o3c2xynpktzl" target="_blank" class="btn-meme" style="background:#00b386;color:#fff;font-size:1.4rem;">DEXSCREENER</a>
+      <a href="https://x.com/babytrollsolana" target="_blank" class="btn-meme white" style="font-size:1.4rem;">TWITTER/X</a>
+      <a href="https://x.com/i/communities/2030253393403351346" target="_blank" class="btn-meme" style="background:#1d9bf0;color:#fff;font-size:1.4rem;">COMMUNITY</a>
+      <a href="https://t.me/babytroll_memecoin" target="_blank" class="btn-meme" style="background:#229ED9;color:#fff;font-size:1.4rem;">TELEGRAM</a>
+    </div>
+
+    <!-- CONTRACT ADDRESS FINAL -->
+    <div data-aos="fade-up">
+      <div class="font-bangers" style="font-size:1rem;letter-spacing:2px;color:rgba(245,240,232,0.5);">CONTRACT ADDRESS</div>
+      <div class="flex items-center gap-2 mt-2 flex-wrap justify-center">
+        <div class="ca-display" style="background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3);color:var(--yellow);">6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump</div>
+        <button class="btn-meme copy-btn" onclick="copyCA(this)" style="font-size:0.9rem;padding:8px 16px;">COPY</button>
+      </div>
+    </div>
+
+    <!-- DISCLAIMER -->
+    <div class="mt-10 font-elite" style="font-size:0.75rem;color:rgba(245,240,232,0.3);max-width:500px;margin:40px auto 0;line-height:1.7;">
+      BABYTROLL is a meme coin for entertainment purposes only.<br>
+      Not financial advice. Do your own research. DYOR.<br>
+      He is just a baby. Or is he?
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="font-bangers" style="font-size:1.5rem;letter-spacing:3px;color:var(--yellow);">BABYTROLL</div>
+  <div>CA: 6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump</div>
+  <div style="margin-top:6px;">© 2026 BABYTROLL — The Internet's Most Dangerous Baby — Solana Network</div>
+  <div style="margin-top:4px;font-size:0.7rem;opacity:0.5;">≥) PROBLEM?</div>
+</footer>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+// AOS Init
+AOS.init({ duration: 700, once: true, offset: 60, easing: 'ease-out-quad' });
+
+// GSAP ScrollTrigger
+gsap.registerPlugin(ScrollTrigger);
+
+// HERO PARALLAX
+gsap.to("#hero img", {
+  yPercent: -18,
+  ease: "none",
+  scrollTrigger: { trigger: "#hero", start: "top top", end: "bottom top", scrub: true }
+});
+
+// FAKE COUNTER ANIMATION
+function animateCounter(el, target, prefix) {
+  let start = Math.floor(target * 0.8);
+  let current = start;
+  const step = Math.ceil((target - start) / 40);
+  const interval = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = prefix + current.toLocaleString();
+    if (current >= target) {
+      clearInterval(interval);
+      // Keep updating randomly
+      setInterval(() => {
+        const delta = Math.floor(Math.random() * 10) - 3;
+        current = Math.max(0, current + delta);
+        el.textContent = prefix + current.toLocaleString();
+      }, 3000 + Math.random() * 2000);
+    }
+  }, 40);
+}
+// counters removed
+
+// COPY CA
+function copyCA(btn) {
+  navigator.clipboard.writeText('6qdzMx4c9rL2X3Ns3SwZ8uEo4zReDPjdXpAEmpo7pump').then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅ COPIED!';
+    btn.style.background = '#00aa44';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 1800);
+  });
+}
+
+// OR IS HE — glitch trigger
+let orIsHeShown = false;
+function triggerOrIsHe() {
+  const el = document.getElementById('orIsHe');
+  const h1 = document.getElementById('heIsJustABaby');
+  el.style.opacity = '1';
+  h1.style.animation = 'glitch 0.3s 5';
+  setTimeout(() => { h1.style.animation = ''; }, 1600);
+}
+
+// Auto trigger on scroll
+ScrollTrigger.create({
+  trigger: '#socials',
+  start: 'top 60%',
+  onEnter: () => {
+    setTimeout(triggerOrIsHe, 600);
+  }
+});
+
+// REACTION POPUP on scroll
+const reactions = ['BASED', 'SENDING IT', '≥) PROBLEM?', 'IT DO BE LIKE THAT', 'NGMI', 'WAGMI', 'BOUGHT THE DIP', 'SOLD THE TOP'];
+let lastReaction = 0;
+window.addEventListener('scroll', () => {
+  const now = Date.now();
+  if (now - lastReaction < 4000) return;
+  if (Math.random() < 0.15) {
+    lastReaction = now;
+    const popup = document.getElementById('reactionPopup');
+    popup.textContent = reactions[Math.floor(Math.random() * reactions.length)];
+    const x = Math.random() * (window.innerWidth - 200) + 20;
+    const y = Math.random() * (window.innerHeight - 80) + 20;
+    popup.style.left = x + 'px';
+    popup.style.top = y + 'px';
+    popup.style.opacity = '1';
+    setTimeout(() => { popup.style.opacity = '0'; }, 1500);
+  }
+});
+
+// GSAP FLOATING ELEMENTS
+gsap.to('.float-1', { y: -16, rotation: 2, duration: 3, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+gsap.to('.float-2', { y: -22, rotation: -3, duration: 4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+gsap.to('.float-3', { y: -12, rotation: 4, duration: 2.8, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+
+// PHASE CARDS GSAP
+gsap.utils.toArray('.phase-wrap').forEach((card, i) => {
+  gsap.from(card, {
+    scrollTrigger: { trigger: card, start: 'top 85%' },
+    opacity: 0, y: 50, rotation: i % 2 === 0 ? -6 : 6,
+    duration: 0.6, delay: i * 0.12, ease: 'back.out(1.2)'
+  });
+});
+
+// TOKENOMICS PAPER ANIMATION
+gsap.utils.toArray('.tok-item').forEach((card, i) => {
+  gsap.from(card, {
+    scrollTrigger: { trigger: '#tokenomics', start: 'top 85%' },
+    scale: 0.6, opacity: 0, rotation: -12,
+    duration: 0.5, delay: i * 0.1, ease: 'back.out(1.4)'
+  });
+});
+
+// MEME GALLERY FLOAT
+gsap.utils.toArray('.meme-card').forEach((card, i) => {
+  gsap.to(card, {
+    y: (i % 2 === 0 ? -8 : 8),
+    rotation: (i % 3 === 0 ? 1 : i % 3 === 1 ? -1 : 0.5),
+    duration: 2 + i * 0.3,
+    repeat: -1, yoyo: true, ease: 'sine.inOut', delay: i * 0.2
+  });
+});
+
+// SMOOTH SCROLL for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// GSAP HERO TEXT ENTRANCE
+gsap.from('#hero h1', { duration: 1, y: -60, opacity: 0, ease: 'back.out(1.5)' });
+gsap.from('#hero .btn-meme', { duration: 0.6, y: 30, opacity: 0, stagger: 0.12, delay: 0.4, ease: 'power2.out' });
+
+// TICKER randomize
+setInterval(() => {
+  // fake number update in ticker
+}, 5000);
+
+// CURSOR custom effect (desktop only)
+if (window.innerWidth > 768) {
+  const trail = document.createElement('div');
+  trail.style.cssText = 'position:fixed;pointer-events:none;z-index:99999;width:12px;height:12px;border-radius:50%;background:rgba(204,17,17,0.4);transform:translate(-50%,-50%);transition:left 0.08s,top 0.08s;';
+  document.body.appendChild(trail);
+  document.addEventListener('mousemove', e => {
+    trail.style.left = e.clientX + 'px';
+    trail.style.top = e.clientY + 'px';
+  });
+}
+</script>
+</body>
+</html>
